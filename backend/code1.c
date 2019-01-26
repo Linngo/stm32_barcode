@@ -349,7 +349,7 @@ static int c1_look_ahead_test(unsigned char source[], int sourcelen, int positio
     return best_scheme;
 }
 
-int c1_encode(struct zint_symbol *symbol, unsigned char source[], unsigned int target[], int length) {
+int c1_encode(struct zint_symbol *symbol, unsigned char source[], unsigned short target[], int length) {
     int current_mode, next_mode;
     int sp, tp, gs1, i, j, p, latch;
     int c40_buffer[6], c40_p;
@@ -1198,9 +1198,9 @@ int code_one(struct zint_symbol *symbol, unsigned char source[], int length) {
     if (symbol->option_2 == 9) {
         /* Version S */
         int codewords;
-        short int elreg[112];
-        unsigned int data[15], ecc[15];
-        int stream[30];
+        short elreg[112];
+        unsigned short data[15], ecc[15];
+        short stream[30];
         int block_width;
 
         if (length > 18) {
@@ -1303,8 +1303,8 @@ int code_one(struct zint_symbol *symbol, unsigned char source[], int length) {
 
     if (symbol->option_2 == 10) {
         /* Version T */
-        unsigned int data[40], ecc[25];
-        unsigned int stream[65];
+        unsigned short data[40], ecc[25];
+        unsigned short stream[65];
         int data_length;
         int data_cw, ecc_cw, block_width;
 
@@ -1401,9 +1401,9 @@ int code_one(struct zint_symbol *symbol, unsigned char source[], int length) {
 
     if ((symbol->option_2 != 9) && (symbol->option_2 != 10)) {
         /* Version A to H */
-        unsigned int data[1500], ecc[600];
-        unsigned int sub_data[190], sub_ecc[75];
-        unsigned int stream[2100];
+        unsigned short data[500], ecc[400];//data[1500], ecc[600];
+        unsigned short sub_data[190], sub_ecc[75];
+        unsigned char stream[1000];;//stream[2100];
         int data_length;
         int data_blocks;
 
@@ -1764,6 +1764,7 @@ int code_one(struct zint_symbol *symbol, unsigned char source[], int length) {
     }
 
     for (i = 0; i < symbol->rows; i++) {
+		if(i < row_h_len)
         symbol->row_height[i] = 1;
     }
 

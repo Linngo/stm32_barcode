@@ -64,7 +64,7 @@ int getsubmode(char input) {
 }
 
 /* Calculate the approximate length of the binary string */
-static int calculate_binlength(char mode[], int source[], const size_t length, int eci) {
+static int calculate_binlength(char mode[], short source[], const size_t length, int eci) {
     size_t i;
     char lastmode = 't';
     int est_binlen = 0;
@@ -225,7 +225,7 @@ int isFourByte(int glyph, int glyph2) {
 }
 
 /* Calculate mode switching */
-static void hx_define_mode(char mode[], int source[], const size_t length) {
+static void hx_define_mode(char mode[], short source[], const size_t length) {
     size_t i;
     char lastmode = 't';
 
@@ -328,7 +328,7 @@ int lookup_text2(char input) {
 }
 
 /* Convert input data to binary stream */
-static void calculate_binary(char binary[], char mode[], int source[], const size_t length, const int eci, int debug) {
+static void calculate_binary(char binary[], char mode[], short source[], const size_t length, const int eci, int debug) {
     int position = 0;
     int i, count, encoding_value;
     int first_byte, second_byte;
@@ -1074,7 +1074,7 @@ int hx_evaluate(unsigned char *eval, int size, int pattern) {
 
     /* Test 2: Adjacent modules in row/column in same colour */
     /* In AIMD-15 section 5.8.3.2 it is stated... “In Table 9 below, i refers to the row
-     * position of the module.” - however i being the length of the run of the
+     * position of the module.�- however i being the length of the run of the
      * same colour (i.e. "block" below) in the same fashion as ISO/IEC 18004
      * makes more sense. -- Confirmed by Wang Yi */
 
@@ -1235,8 +1235,8 @@ int han_xin(struct zint_symbol *symbol, const unsigned char source[], size_t len
     unsigned char fi_ecc[4];
 
 #ifndef _MSC_VER
-    int utfdata[length + 1];
-    int gbdata[(length + 1) * 2];
+    short utfdata[length + 1];
+    short gbdata[(length + 1) * 2];
     char mode[length + 1];
 #else
     int* utfdata = (int *) _alloca((length + 1) * sizeof (int));
@@ -1565,6 +1565,7 @@ int han_xin(struct zint_symbol *symbol, const unsigned char source[], size_t len
                 set_module(symbol, i, j);
             }
         }
+		if(i < row_h_len)
         symbol->row_height[i] = 1;
     }
 

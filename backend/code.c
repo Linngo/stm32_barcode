@@ -602,8 +602,8 @@ int vin(struct zint_symbol *symbol, unsigned char source[], int length) {
     char dest[200];
     char input_check;
     char output_check;
-    int value[17];
-    int weight[17] = {8, 7, 6, 5, 4, 3, 2, 10, 0, 9, 8, 7, 6, 5, 4, 3, 2};
+    char value[17];
+    char weight[17] = {8, 7, 6, 5, 4, 3, 2, 10, 0, 9, 8, 7, 6, 5, 4, 3, 2};
     int sum;
     int i;
     

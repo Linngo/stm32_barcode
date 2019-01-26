@@ -75,13 +75,14 @@ struct zint_symbol *ZBarcode_Create() {
     symbol->eci = 3;
     symbol->dot_size = 4.0 / 5.0;
     symbol->debug = 0;
+    symbol->Use_scale = 0;
     return symbol;
 }
 
 extern void render_free(struct zint_symbol *symbol); /* Free render structures */
 
 void ZBarcode_Clear(struct zint_symbol *symbol) {
-    int i, j;
+    short i, j;
 
     for (i = 0; i < symbol->rows; i++) {
         for (j = 0; j < symbol->width; j++) {
@@ -105,7 +106,7 @@ void ZBarcode_Clear(struct zint_symbol *symbol) {
 
 void ZBarcode_Delete(struct zint_symbol *symbol) {
     if (symbol->bitmap != NULL)
-        free(symbol->bitmap);
+				free(symbol->bitmap);
 
     // If there is a rendered version, ensure its memory is released
     render_free(symbol);
@@ -156,13 +157,13 @@ extern int rsslimited(struct zint_symbol *symbol, unsigned char source[], int le
 extern int rssexpanded(struct zint_symbol *symbol, unsigned char source[], int length); /* RSS Expanded */
 extern int composite(struct zint_symbol *symbol, unsigned char source[], int length); /* Composite Symbology */
 extern int kix_code(struct zint_symbol *symbol, unsigned char source[], int length); /* TNT KIX Code */
-extern int aztec(struct zint_symbol *symbol, unsigned char source[], const size_t length); /* Aztec Code */
+//extern int aztec(struct zint_symbol *symbol, unsigned char source[], const size_t length); /* Aztec Code */
 extern int code32(struct zint_symbol *symbol, unsigned char source[], int length); /* Italian Pharmacode */
 extern int daft_code(struct zint_symbol *symbol, unsigned char source[], int length); /* DAFT Code */
 extern int ean_14(struct zint_symbol *symbol, unsigned char source[], int length); /* EAN-14 */
 extern int nve_18(struct zint_symbol *symbol, unsigned char source[], int length); /* NVE-18 */
 extern int microqr(struct zint_symbol *symbol, const unsigned char source[], size_t length); /* Micro QR Code */
-extern int aztec_runes(struct zint_symbol *symbol, unsigned char source[], int length); /* Aztec Runes */
+//extern int aztec_runes(struct zint_symbol *symbol, unsigned char source[], int length); /* Aztec Runes */
 extern int korea_post(struct zint_symbol *symbol, unsigned char source[], int length); /* Korea Post */
 extern int japan_post(struct zint_symbol *symbol, unsigned char source[], int length); /* Japanese Post */
 extern int code_49(struct zint_symbol *symbol, unsigned char source[], const int length); /* Code 49 */
@@ -284,7 +285,8 @@ static int hibc(struct zint_symbol *symbol, unsigned char source[], size_t lengt
             error_number = micro_pdf417(symbol, (unsigned char *) to_process, length);
             break;
         case BARCODE_HIBC_AZTEC:
-           // error_number = aztec(symbol, (unsigned char *) to_process, length);
+            //error_number = aztec(symbol, (unsigned char *) to_process, length);
+				    error_number = 5;
             break;
         case BARCODE_HIBC_BLOCKF:
             error_number = codablock(symbol, (unsigned char *) to_process, length);
@@ -300,8 +302,9 @@ static void check_row_heights(struct zint_symbol *symbol) {
     int i;
     int preset_height = 0;
     int large_bar_height = 0;
+    short len = symbol->rows>row_h_len?row_h_len:symbol->rows;
 
-    for (i = 0; i < symbol->rows; i++) {
+    for (i = 0; i < len; i++) {
         preset_height += symbol->row_height[i];
         if (symbol->row_height[i] == 0) {
             large_bar_count++;
@@ -315,7 +318,7 @@ static void check_row_heights(struct zint_symbol *symbol) {
     }
 
     if (large_bar_height < 5) {
-        for (i = 0; i < symbol->rows; i++) {
+        for (i = 0; i < len; i++) {
             if (symbol->row_height[i] == 0) {
                 symbol->row_height[i] = 5;
                 preset_height += 5;
@@ -718,7 +721,9 @@ static int reduced_charset(struct zint_symbol *symbol, const unsigned char *sour
             break;
         case BARCODE_MAXICODE: error_number = maxicode(symbol, preprocessed, in_length);
             break;
-        case BARCODE_AZTEC: //error_number = aztec(symbol, preprocessed, in_length);
+        case BARCODE_AZTEC: 
+					//error_number = aztec(symbol, preprocessed, in_length);
+					error_number = ZINT_WARN_INVALID_OPTION;
             break;
         case BARCODE_DOTCODE: error_number = dotcode(symbol, preprocessed, in_length);
             break;
@@ -916,7 +921,7 @@ int ZBarcode_Encode(struct zint_symbol *symbol, const unsigned char *source, int
         error_number = ZINT_ERROR_INVALID_OPTION;
     }
 
-    if ((symbol->eci < 3) || (symbol->eci > 999999)) {
+    if ((symbol->eci < 3) || (symbol->eci >= 65535)) {
         strcpy(symbol->errtxt, "218: Invalid ECI mode");
         error_number = ZINT_ERROR_INVALID_OPTION;
     }

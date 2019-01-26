@@ -114,7 +114,7 @@ int save_raster_image_to_file(struct zint_symbol *symbol, int image_height, int 
 void draw_bar(char *pixelbuf, int xpos, int xlen, int ypos, int ylen, int image_width, int image_height) {
     /* Draw a rectangle */
     int i, j, png_ypos;
-	  int tmp = (image_width+7)/8;
+	int tmp = (image_width+7)/8;
 
     png_ypos = image_height - ypos - ylen;
     /* This fudge is needed because EPS measures height from the bottom up but
@@ -404,10 +404,15 @@ int plot_raster_maxicode(struct zint_symbol *symbol, int rotate_angle, int data_
 
     xoffset = symbol->border_width + symbol->whitespace_width;
     yoffset = symbol->border_width;
-    image_width = (300 + (2 * xoffset * 2)) * scaler;
-    image_height = (300 + (2 * yoffset * 2)) * scaler;
+//    image_width = (300 + (2 * xoffset * 2)) * scaler;
+//    image_height = (300 + (2 * yoffset * 2)) * scaler;
+    image_width = 100;
+    image_height = 100;
 
+    scaler = image_width/symbol->width;
 
+//    int rx=(image_width-(2 * xoffset * 2) -30)/2;
+ //   int ry=(image_height-(2 * yoffset * 2) -9)/2;
 
     int tmp = (image_width+7)/8;
 
@@ -639,6 +644,8 @@ int plot_raster_default(struct zint_symbol *symbol, int rotate_angle, int data_t
 
     large_bar_count = 0;
     preset_height = 0.0;
+   // if(symbol->rows < row_h_len);
+    	//return ZINT_ERROR_TOO_LONG;
     for (i = 0; i < symbol->rows; i++) {
         preset_height += symbol->row_height[i];
         if (symbol->row_height[i] == 0) {
@@ -1018,10 +1025,17 @@ int plot_raster_default(struct zint_symbol *symbol, int rotate_angle, int data_t
         draw_string(pixelbuf, (char*) local_text, textpos, default_text_posn, textflags, image_width, image_height);
     }
 
-    scale_width = symbol->bitmap_width;
-    scale_height = symbol->bitmap_height;
+
+    if(symbol->Use_scale)
+    	scale_height = image_height*symbol->scale/2,
+		scale_width  = image_width*symbol->scale/2;
+    else
+        scale_width = symbol->bitmap_width,
+        scale_height = symbol->bitmap_height;
+
 //    scale_width = image_width * symbol->scale;
 //    scale_height = image_height * symbol->scale;
+
     dest_tmp = (scale_width+7)/8;
 
     /* Apply scale options by creating another pixel buffer */
@@ -1040,12 +1054,12 @@ int plot_raster_default(struct zint_symbol *symbol, int rotate_angle, int data_t
 
     for(vert = 0;vert < scale_height; vert++)
     {
-		 dwsrcY = vert*image_height/scale_height;
+		 dwsrcY = (vert+0.5)*image_height/scale_height-0.5;
 		 pucDest= scaled_pixelbuf+vert*dest_tmp; //第x行
 		 pucSrc = pixelbuf+dwsrcY*src_tmp;
 		 for(horiz = 0;horiz<scale_width; horiz++)
 		 {
-			  dwsrcX = horiz*image_width/scale_width; //第x个
+			  dwsrcX = (horiz+0.5)*image_width/scale_width-0.5; //第x个
 			  if((*(pucSrc+dwsrcX/8)>>(7-dwsrcX%8))&1)
 			   *(pucDest+horiz/8) |= 1 << (7-horiz%8);
 		 }

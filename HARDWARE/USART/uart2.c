@@ -146,9 +146,9 @@ void USART2_IRQHandler(void) {
   }
 }
 
-void uart_send(u8* fmt,int len)  
+void uart_send(uint8_t* fmt,uint16_t len)  
 {  
-	u16 j;
+	uint16_t j;
 	for(j=0;j<len;j++)//循环发送数据
 	{
 	  while(USART_GetFlagStatus(USART2,USART_FLAG_TC)==RESET);  //等待上次传输完成 

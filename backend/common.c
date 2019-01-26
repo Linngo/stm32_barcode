@@ -135,16 +135,21 @@ int posn(const char set_string[], const char data) {
 
 /* Return true (1) if a module is dark/black, otherwise false (0) */
 int module_is_set(const struct zint_symbol *symbol, const int y_coord, const int x_coord) {
-    return (symbol->encoded_data[y_coord][x_coord / 7] >> (x_coord % 7)) & 1;
+	if((y_coord < row_h_len)&& (x_coord / 7 < row_w_len))
+		return (symbol->encoded_data[y_coord][x_coord / 7] >> (x_coord % 7)) & 1;
+	else
+		return 1;
 }
 
 /* Set a module to dark/black */
 void set_module(struct zint_symbol *symbol, const int y_coord, const int x_coord) {
+	if((y_coord < row_h_len)&& (x_coord / 7 < row_w_len))
     symbol->encoded_data[y_coord][x_coord / 7] |= 1 << (x_coord % 7);
 }
 
 /* Set (or unset) a module to white */
 void unset_module(struct zint_symbol *symbol, const int y_coord, const int x_coord) {
+	if((y_coord < row_h_len)&& (x_coord / 7 < row_w_len))
     symbol->encoded_data[y_coord][x_coord / 7] &= ~(1 << (x_coord % 7));
 }
 
@@ -242,7 +247,7 @@ int istwodigits(const unsigned char source[], const size_t position) {
     return 0;
 }
 
-int utf8toutf16(struct zint_symbol *symbol, const unsigned char source[], int vals[], size_t *length) {
+int utf8toutf16(struct zint_symbol *symbol, const unsigned char source[], short vals[], size_t *length) {
     size_t bpos;
     int    jpos, error_number;
     int next;
@@ -303,7 +308,6 @@ void set_minimum_height(struct zint_symbol *symbol, const int min_height) {
 
     for (i = 0; i < symbol->rows; i++) {
         fixed_height += symbol->row_height[i];
-
         if (symbol->row_height[i] == 0) {
             zero_count++;
         }

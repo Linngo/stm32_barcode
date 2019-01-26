@@ -1,7 +1,7 @@
-/*
+/*  bmp.h - header structure for Windows bitmap files
 
-    This is a simple Reed-Solomon encoder
-    (C) Cliff Hones 2004
+    libzint - the open source barcode library
+    Copyright (C) 2009-2017 Robin Stuart <rstuart114@gmail.com>
 
     Redistribution and use in source and binary forms, with or without
     modification, are permitted provided that the following conditions
@@ -27,25 +27,59 @@
     LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
     OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
     SUCH DAMAGE.
-
  */
 
-#ifndef __REEDSOL_H
-#define __REEDSOL_H
+#ifndef BMP_H
+#define BMP_H
 
 #ifdef __cplusplus
 extern "C" {
-#endif /* __cplusplus */
+#endif
 
-extern void rs_init_gf(const short poly);
-extern void rs_init_code(const short nsym,int index);
-extern void rs_encode(const size_t len,const unsigned char *data, unsigned char *res);
-extern void rs_encode_long(const int len,const unsigned short *data, unsigned short *res);
-    extern void rs_free(void);
+#ifdef _MSC_VER
+#include <windows.h>
+#include "stdint_msvc.h"
+#else
+#include <stdint.h>
+#endif
+
+#pragma pack (1)
+	
+	typedef struct tagBITMAPFILEHEADERx {
+    uint16_t bfType;
+    uint32_t bfSize;
+    uint16_t bfReserved1;
+    uint16_t bfReserved2;
+    uint32_t bfOffBits;
+  } BITMAPFILEHEADERx;
+	
+	typedef struct tagBITMAPINFOHEADERx {
+    uint32_t biSize;
+    int32_t biWidth;
+    int32_t biHeight;
+    uint16_t biPlanes;
+    uint16_t biBitCount;
+    uint32_t biCompression;
+    uint32_t biSizeImage;
+    int32_t biXPelsPerMeter;
+    int32_t biYPelsPerMeter;
+    uint32_t biClrUsed;
+    uint32_t biClrImportant;
+  } BITMAPINFOHEADERx;
+	
+	typedef struct tagRGBQUADx {
+    uint8_t rgbBlue;
+    uint8_t rgbGreen;
+    uint8_t rgbRed;
+    uint8_t rgbReserved;
+  } RGBQUADx;
+
+#pragma pack ()
 
 #ifdef __cplusplus
 }
-#endif /* __cplusplus */
+#endif
 
-#endif				/* __REEDSOL_H */
+#endif /* BMP_H */
+
 

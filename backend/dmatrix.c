@@ -1295,6 +1295,7 @@ int data_matrix_200(struct zint_symbol *symbol,const unsigned char source[], con
                     set_module(symbol, (H - y) - 1, x);
                 }
             }
+			if((H - y - 1) < row_h_len)
             symbol->row_height[(H - y) - 1] = 1;
         }
         free(grid);

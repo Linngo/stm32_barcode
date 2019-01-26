@@ -35,6 +35,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */
+#include <stdio.h>
 
     struct zint_render_line {
         float x, y, length, width;
@@ -66,36 +67,39 @@ extern "C" {
         struct zint_render_ring *rings; /* Pointer to first ring */
         struct zint_render_hexagon *hexagons; /* Pointer to first hexagon */
     };
-
-    struct zint_symbol {
-        int symbology;
-        int height;
-        int whitespace_width;
-        int border_width;
-        int output_options;
+#define row_h_len 60
+#define row_w_len 100
+  struct zint_symbol {
+    	short symbology;
+        short height;
+        short whitespace_width;
+        short border_width;
+        short output_options;
         float scale;
-        int option_1;
-        int option_2;
-        int option_3;
-        int show_hrt;
-        int fontsize;
-        int input_mode;
-        int eci;
+        short option_1;
+        short option_2;
+        short option_3;
+        short show_hrt;
+        short fontsize;
+        short input_mode;
+        short eci;
         unsigned char text[100];
-        int rows;
-        int width;
+        short rows;
+        short width;
         char primary[100];
-        unsigned char encoded_data[60][100];
-        int row_height[60]; /* Largest symbol is 189 x 189 Han Xin */
-        char errtxt[50];
+        unsigned char encoded_data[row_h_len][row_w_len];
+        char row_height[row_h_len]; /* Largest symbol is 189 x 189 Han Xin */
+        char errtxt[90]; //largest 81 byte use
         char *bitmap;
-        int bitmap_width;
-        int bitmap_height;
-        unsigned int bitmap_byte_length;
+        short bitmap_width;
+        short bitmap_height;
+        char Use_scale;
         float dot_size;
         struct zint_render *rendered;
-        int debug;
-    };
+        char debug;
+//			};
+//    };__packed;
+	  }__attribute__((packed));
 
 #define ZINT_VERSION_MAJOR      2
 #define ZINT_VERSION_MINOR      6

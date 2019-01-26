@@ -101,7 +101,8 @@ static int clr_row(char *Dots, const int Hgt, const int Wid, const int y) {
 }
 
 /* Dot pattern scoring routine from Annex A */
-const int score_array(char Dots[], int Hgt, int Wid) {
+//const
+int score_array(char Dots[], int Hgt, int Wid) {
     int x, y, worstedge, first, last, sum;
     int penalty_local = 0;
     int penalty = 0;
@@ -1457,6 +1458,7 @@ int dotcode(struct zint_symbol *symbol, const unsigned char source[], int length
                 set_module(symbol, k, j);
             }
         }
+		if(k < row_h_len)
         symbol->row_height[k] = 1;
     }
 

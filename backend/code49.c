@@ -324,6 +324,7 @@ int code_49(struct zint_symbol *symbol, unsigned char source[], const int length
         strcat(pattern, "1111"); /* Stop character */
 
         /* Expand into symbol */
+		if(i < row_h_len)
         symbol->row_height[i] = 10;
 
         for (j = 0; j < strlen(pattern); j++) {

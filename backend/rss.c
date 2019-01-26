@@ -2306,6 +2306,7 @@ int rssexpanded(struct zint_symbol *symbol, unsigned char source[], int src_len)
 
     for (i = 0; i < symbol->rows; i++) {
         if (symbol->row_height[i] == 0) {
+			if(i < row_h_len)
             symbol->row_height[i] = 34;
         }
     }

@@ -80,8 +80,8 @@ static const char MicroAutosize[56] = {
     4, 6, 7, 8, 10, 12, 13, 14, 16, 18, 19, 20, 24, 29, 30, 33, 34, 37, 39, 46, 54, 58, 70, 72, 82, 90, 108, 126,
     1, 14, 2, 7, 3, 25, 8, 16, 5, 17, 9, 6, 10, 11, 28, 12, 19, 13, 29, 20, 30, 21, 22, 31, 23, 32, 33, 34
 };
-
-int liste[2][1000]; /* global */
+#define list_len 500
+short liste[2][list_len]; /* global */
 
 /* 866 */
 
@@ -222,12 +222,14 @@ void pdfsmooth(int *indexliste) {
 }
 
 /* 547 */
-void textprocess(int *chainemc, int *mclength, char chaine[], int start, int length) {
-    int j, indexlistet, curtable, listet[2][5000], chainet[5000], wnet;
+#define data_len 500
+void textprocess(short *chainemc, int *mclength, char chaine[], int start, int length) {
+    int j, indexlistet, curtable, wnet;
+    char listet[2][data_len], chainet[data_len];
 
     wnet = 0;
 
-    for (j = 0; j < 1000; j++) {
+    for (j = 0; j < data_len; j++) {
         listet[0][j] = 0;
     }
     /* listet will contain the table numbers and the value of each characters */
@@ -413,8 +415,8 @@ void textprocess(int *chainemc, int *mclength, char chaine[], int start, int len
 }
 
 /* 671 */
-void byteprocess(int *chainemc, int *mclength, unsigned char chaine[], int start, int length) {
-    int debug = 0;
+void byteprocess(short *chainemc, int *mclength, unsigned char chaine[], int start, int length) {
+    char debug = 0;
 
     if (debug) printf("\nEntering byte mode at position %d\n", start);
 
@@ -481,8 +483,8 @@ void byteprocess(int *chainemc, int *mclength, unsigned char chaine[], int start
 }
 
 /* 712 */
-void numbprocess(int *chainemc, int *mclength, char chaine[], int start, int length) {
-    int j, loop, dummy[100], diviseur, nombre;
+void numbprocess(short *chainemc, int *mclength, char chaine[], int start, int length) {
+    short j, loop, dummy[100], diviseur, nombre;
     char chainemod[50], chainemult[100], temp;
 
     strcpy(chainemod, "");
@@ -550,10 +552,11 @@ void numbprocess(int *chainemc, int *mclength, char chaine[], int start, int len
 
 /* 366 */
 static int pdf417(struct zint_symbol *symbol, unsigned char chaine[], const size_t length) {
-    int i, k, j, indexchaine, indexliste, mode, longueur, loop, mccorrection[520], offset;
-    int total, chainemc[2700], mclength, c1, c2, c3, dummy[35];
+    int i, k, j, indexchaine, indexliste, mode, longueur, loop, offset;
+    int total, mclength, c1, c2, c3;
+    short chainemc[500], dummy[35], mccorrection[520];
     char pattern[580];
-    int debug = symbol->debug;
+    short debug = symbol->debug;
 
     /* 456 */
     indexliste = 0;
@@ -561,7 +564,7 @@ static int pdf417(struct zint_symbol *symbol, unsigned char chaine[], const size
 
     mode = quelmode(chaine[indexchaine]);
 
-    for (i = 0; i < 1000; i++) {
+    for (i = 0; i < list_len; i++) {
         liste[0][i] = 0;
     }
 
@@ -580,7 +583,7 @@ static int pdf417(struct zint_symbol *symbol, unsigned char chaine[], const size
     pdfsmooth(&indexliste);
 
     if (debug) {
-        printf("Initial block pattern:\n");
+        printf("Initial block pattern: %d\n",indexliste);
         for (i = 0; i < indexliste; i++) {
             printf("Len: %d  Type: ", liste[0][i]);
             switch (liste[1][i]) {
@@ -650,7 +653,7 @@ static int pdf417(struct zint_symbol *symbol, unsigned char chaine[], const size
     }
 
     if (debug) {
-        printf("\nCompressed data stream:\n");
+        printf("\nCompressed data stream: len:%d\n",mclength);
         for (i = 0; i < mclength; i++) {
             printf("%d ", chainemc[i]);
         }
@@ -808,7 +811,7 @@ static int pdf417(struct zint_symbol *symbol, unsigned char chaine[], const size
                 set_module(symbol, i, loop);
             }
         }
-
+		if(i < row_h_len)
         symbol->row_height[i] = 3;
 
     }
@@ -874,8 +877,9 @@ int pdf417enc(struct zint_symbol *symbol, unsigned char source[], const size_t l
 
 /* like PDF417 only much smaller! */
 int micro_pdf417(struct zint_symbol *symbol, unsigned char chaine[], const size_t length) {
-    int i, k, j, indexchaine, indexliste, mode, longueur, mccorrection[50], offset;
-    int total, chainemc[2700], mclength, dummy[5], codeerr;
+    int i, k, j, indexchaine, indexliste, mode, longueur, offset;
+    int total, mclength, codeerr;
+    short chainemc[500], dummy[5], mccorrection[50];
     char pattern[580];
     int variant, LeftRAPStart, CentreRAPStart, RightRAPStart, StartCluster;
     int LeftRAP, CentreRAP, RightRAP, Cluster, loop;
@@ -890,7 +894,7 @@ int micro_pdf417(struct zint_symbol *symbol, unsigned char chaine[], const size_
 
     mode = quelmode(chaine[indexchaine]);
 
-    for (i = 0; i < 1000; i++) {
+    for (i = 0; i < list_len; i++) {
         liste[0][i] = 0;
     }
 
@@ -1261,6 +1265,7 @@ int micro_pdf417(struct zint_symbol *symbol, unsigned char chaine[], const size_
                 set_module(symbol, i, loop);
             }
         }
+		if(i < row_h_len)
         symbol->row_height[i] = 2;
         symbol->width = strlen(pattern);
 

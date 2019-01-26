@@ -53,7 +53,7 @@
 
 #define DPDSET	"0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ*"
 
-static int list[2][170];
+static short list[2][170];
 
 /* Code 128 tables checked against ISO/IEC 15417:2007 */
 

@@ -54,7 +54,7 @@
 static int logmod; // 2**symsize - 1
 static int rlen;
 
-static int *logt = NULL, *alog = NULL, *rspoly = NULL;
+static short *logt = NULL, *alog = NULL, *rspoly = NULL;
 
 // rs_init_gf(poly) initialises the parameters for the Galois Field.
 // The symbol size is determined from the highest bit set in poly
@@ -66,8 +66,8 @@ static int *logt = NULL, *alog = NULL, *rspoly = NULL;
 // polynomial.  e.g. for ECC200 (8-bit symbols) the polynomial is
 // a**8 + a**5 + a**3 + a**2 + 1, which translates to 0x12d.
 
-void rs_init_gf(const int poly) {
-    int m, b, p, v;
+void rs_init_gf(const short poly) {
+    short m, b, p, v;
 
     // Find the top bit, and hence the symbol size
     for (b = 1, m = 0; b <= poly; b <<= 1)
@@ -77,11 +77,11 @@ void rs_init_gf(const int poly) {
 
     // Calculate the log/alog tables
     logmod = (1 << m) - 1;
-    logt = (int *) malloc(sizeof (int) * (logmod + 1));
-    alog = (int *) malloc(sizeof (int) * logmod);
+    logt = (short *) malloc(sizeof (short) * (logmod + 1));
+    alog = (short *) malloc(sizeof (short) * logmod);
 
 #ifdef Memory_cal
-	println("heap+%d",sizeof (int) * (logmod + 1)+sizeof (int) * logmod);
+	println("heap+%d",sizeof (short) * (logmod + 1)+sizeof (short) * logmod);
 #endif
 	
     for (p = 1, v = 0; v < logmod; v++) {
@@ -100,13 +100,13 @@ void rs_init_gf(const int poly) {
 // (x + 2**i)*(x + 2**(i+1))*...   [nsym terms]
 // For ECC200, index is 1.
 
-void rs_init_code(const int nsym, int index) {
-    int i, k;
+void rs_init_code(const short nsym, int index) {
+    short i, k;
 
-    rspoly = (int *) malloc(sizeof (int) * (nsym + 1));
+    rspoly = (short *) malloc(sizeof (short) * (nsym + 1));
 #ifdef Memory_cal
-	println("heap+%d",sizeof (int) * (nsym + 1));
-	println("heap-%d", sizeof (int) * (nsym + 1));
+	println("heap+%d",sizeof (short) * (nsym + 1));
+	println("heap-%d", sizeof (short) * (nsym + 1));
 #endif
     rlen = nsym;
 
@@ -143,7 +143,7 @@ void rs_encode(const size_t len,const unsigned char *data, unsigned char *res) {
 }
 
 /* The same as above but for larger bitlengths - Aztec code compatible */
-void rs_encode_long(const int len, const unsigned int *data, unsigned int *res) {
+void rs_encode_long(const int len, const unsigned short *data, unsigned short *res) {
     int i, k;
     for (i = 0; i < rlen; i++)
         res[i] = 0;
@@ -168,7 +168,7 @@ void rs_free(void) {
     free(alog);
     free(rspoly);
 #ifdef Memory_cal
-	println("heap-%d", sizeof (int) * (logmod + 1)+sizeof (int) * logmod);
+	println("heap-%d", sizeof (short) * (logmod + 1)+sizeof (short) * logmod);
 #endif
     rspoly = NULL;
 }

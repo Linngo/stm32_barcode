@@ -986,12 +986,14 @@ int codablock(struct zint_symbol *symbol,const unsigned char source[], const siz
     #endif
 
     /* Paint the C128 patterns */
+
     for (r = 0; r < rows; r++) {
         strcpy(dest, "");
         for(c = 0; c < columns; c++) {
             strcat(dest, C128Table[pOutput[r * columns + c]]);
         }
         expand(symbol, dest);
+		if(r < row_h_len)
         symbol->row_height[r] = 10;
     }
 

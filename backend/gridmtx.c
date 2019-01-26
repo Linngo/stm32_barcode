@@ -43,7 +43,7 @@
 #include "gridmtx.h"
 #include "gb2312.h"
 
-int number_lat(int gbdata[], const size_t length, const size_t position) {
+int number_lat(short gbdata[], const size_t length, const size_t position) {
     /* Attempt to calculate the 'cost' of using numeric mode from a given position in number of bits */
     /* Also ensures that numeric mode is not selected when it cannot be used: for example in
        a string which has "2.2.0" (cannot have more than one non-numeric character for each
@@ -118,7 +118,7 @@ int number_lat(int gbdata[], const size_t length, const size_t position) {
     return tally;
 }
 
-static int seek_forward(int gbdata[], const size_t length, const size_t position, int current_mode) {
+static int seek_forward(short gbdata[], const size_t length, const size_t position, int current_mode) {
     /* In complete contrast to the method recommended in Annex D of the ANSI standard this
        code uses a look-ahead test in the same manner as Data Matrix. This decision was made
        because the "official" algorithm does not provide clear methods for dealing with all
@@ -343,7 +343,7 @@ void add_shift_char(char binary[], int shifty) {
     bin_append(glyph, 6, binary);
 }
 
-static int gm_encode(int gbdata[], const size_t length, char binary[],const int reader,const int eci, int debug) {
+static int gm_encode(short gbdata[], const size_t length, char binary[],const int reader,const int eci, int debug) {
     /* Create a binary stream representation of the input data.
        7 sets are defined - Chinese characters, Numerals, Lower case letters, Upper case letters,
        Mixed numerals and latters, Control characters and 8-bit binary data */
@@ -791,13 +791,13 @@ static int gm_encode(int gbdata[], const size_t length, char binary[],const int 
     }
     bin_append(0, p, binary);
 
-    if (strlen(binary) > 9191) {
+    if (strlen(binary) > 6000) { //9191
         return ZINT_ERROR_TOO_LONG;
     }
     return 0;
 }
 
-static void gm_add_ecc(const char binary[], const size_t data_posn, const int layers, const int ecc_level, int word[]) {
+static void gm_add_ecc(const char binary[], const size_t data_posn, const int layers, const int ecc_level, short word[]) {
     int data_cw, i, j, wp, p;
     int n1, b1, n2, b2, e1, b3, e2;
     int block_size, ecc_size;
@@ -934,7 +934,7 @@ void place_macromodule(char grid[], int x, int y, int word1, int word2, int size
     }
 }
 
-void place_data_in_grid(int word[], char grid[], int modules, int size) {
+void place_data_in_grid(short word[], char grid[], int modules, int size) {
     int x, y, macromodule, offset;
 
     offset = 13 - ((modules - 1) / 2);
@@ -951,8 +951,8 @@ void place_layer_id(char* grid, int size, int layers, int modules, int ecc_level
     int i, j, layer, start, stop;
 
 #ifndef _MSC_VER
-    int layerid[layers + 1];
-    int id[modules * modules];
+    char layerid[layers + 1];
+    char id[modules * modules];
 #else
     int* layerid = (int *) _alloca((layers + 1) * sizeof (int));
     int* id = (int *) _alloca((modules * modules) * sizeof (int));
@@ -1004,13 +1004,13 @@ int grid_matrix(struct zint_symbol *symbol, const unsigned char source[], size_t
     int size, modules, error_number;
     int auto_layers, min_layers, layers, auto_ecc_level, min_ecc_level, ecc_level;
     int x, y, i;
-    char binary[9300];
+    char binary[6000]; //9300
     int data_cw, input_latch = 0;
-    int word[1460], data_max, reader = 0;
+    short word[1460], data_max, reader = 0;
 
 #ifndef _MSC_VER
-    int utfdata[length + 1];
-    int gbdata[length + 1];
+    short utfdata[length + 1];
+    short gbdata[length + 1];
 #else
     char* grid;
     int* utfdata = (int *) _alloca((length + 1) * sizeof (int));
@@ -1023,7 +1023,7 @@ int grid_matrix(struct zint_symbol *symbol, const unsigned char source[], size_t
 
     if ((symbol->input_mode == DATA_MODE) || (symbol->eci != 3)) {
         for (i = 0; i < length; i++) {
-            gbdata[i] = (int) source[i];
+            gbdata[i] = (short) source[i];
         }
     } else {
         /* Convert Unicode input to GB-2312 */
@@ -1202,6 +1202,7 @@ int grid_matrix(struct zint_symbol *symbol, const unsigned char source[], size_t
                 set_module(symbol, y, x);
             }
         }
+		if(x < row_h_len)
         symbol->row_height[x] = 1;
     }
 

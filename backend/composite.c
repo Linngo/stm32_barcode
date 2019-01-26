@@ -341,8 +341,8 @@ static int cc_b(struct zint_symbol *symbol, char source[], int cc_width) {
 #else
     unsigned char* data_string = (unsigned char*) _alloca((strlen(source) / 8) + 3);
 #endif
-    int chainemc[180], mclength;
-    int k, j, p, longueur, mccorrection[50], offset;
+    short chainemc[180];
+    int k, j, p, longueur, mccorrection[50], offset, mclength;
     int total, dummy[5];
     char pattern[580];
     int variant, LeftRAPStart, CentreRAPStart, RightRAPStart, StartCluster;
@@ -594,8 +594,8 @@ static int cc_c(struct zint_symbol *symbol, char source[], int cc_width, int ecc
 #else
     unsigned char* data_string = (unsigned char*) _alloca((strlen(source) / 8) + 4);
 #endif
-    int chainemc[1000], mclength, k;
-    int offset, longueur, loop, total, j, mccorrection[520];
+    short chainemc[1000], k;
+    int offset, longueur, loop, total, j, mccorrection[520],mclength;
     int c1, c2, c3, dummy[35];
     char pattern[580];
 

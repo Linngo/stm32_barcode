@@ -54,7 +54,7 @@
 
 extern int parunmodd(const unsigned char llyth);
 
-static int list[2][170];
+static short list[2][170];
 
 static const char *C16KTable[107] = {
     /* EN 12323 Table 1 - "Code 16K" character encodations */
@@ -724,6 +724,7 @@ int code16k(struct zint_symbol *symbol, unsigned char source[], const size_t len
                 flip_flop = 0;
             }
         }
+		if(current_row < row_h_len)
         symbol->row_height[current_row] = 10;
     }
 

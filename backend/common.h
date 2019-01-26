@@ -70,7 +70,7 @@ extern "C" {
     extern void unset_module(struct zint_symbol *symbol, const int y_coord, const int x_coord);
     extern int is_stackable(const int symbology);
     extern int is_extendable(const int symbology);
-    extern int utf8toutf16(struct zint_symbol *symbol, const unsigned char source[], int vals[], size_t *length);
+    extern int utf8toutf16(struct zint_symbol *symbol, const unsigned char source[], short vals[], size_t *length);
     extern void set_minimum_height(struct zint_symbol *symbol, const int min_height);
 #ifdef __cplusplus
 }

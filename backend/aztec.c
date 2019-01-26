@@ -40,7 +40,7 @@
 #include "aztec.h"
 #include "reedsol.h"
 
-static int AztecMap[22801];
+static short AztecMap[22801];
 
 static int count_doubles(const unsigned char source[], const int posn, const size_t src_len) {
     int c = 0;
@@ -1341,7 +1341,7 @@ int aztec(struct zint_symbol *symbol, unsigned char source[], const size_t lengt
     }
 
 #ifndef _MSC_VER
-    unsigned int data_part[data_blocks + 3], ecc_part[ecc_blocks + 3];
+    unsigned short data_part[data_blocks + 3], ecc_part[ecc_blocks + 3];
 #else
     data_part = (unsigned int*) _alloca((data_blocks + 3) * sizeof (unsigned int));
     ecc_part = (unsigned int*) _alloca((ecc_blocks + 3) * sizeof (unsigned int));
